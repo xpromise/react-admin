@@ -4,7 +4,6 @@ import LoginForm from '../../components/login-form';
 import logo from './logo.png';
 import './index.less';
 
-
 export default class Login extends Component {
   render () {
     return (
