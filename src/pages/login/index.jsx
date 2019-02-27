@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import LoginForm from '../../components/login-form';
 import {reqLogin} from "../../api";
 
-import logo from './logo.png';
+import logo from '../../assets/images/logo.png';
 import './index.less';
 
 export default class Login extends Component {

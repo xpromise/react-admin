@@ -17,16 +17,16 @@ export default function ajax(url, data = {}, method = 'GET') {
   }
   
   return new Promise((resolve, reject) => {
-    promise
-      .then(res => {
-        //将请求回来的数据返回
-        resolve(res.data);
-      })
-      .catch(err => {
-        //统一处理请求失败的逻辑
-        console.log('请求失败err:', err);
-        message.error('请求失败~~~');
-      })
+      promise
+        .then(res => {
+          //将请求回来的数据返回
+          resolve(res.data);
+        })
+        .catch(err => {
+          //统一处理请求失败的逻辑
+          console.log('请求失败err:', err);
+          message.error('请求失败~~~');
+        })
   })
   
   /*
@@ -43,6 +43,8 @@ export default function ajax(url, data = {}, method = 'GET') {
         message.error('请求失败~~~');
       })
   */
+  
+  
 }
 
 
