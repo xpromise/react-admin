@@ -37,18 +37,18 @@ class LoginForm extends Component {
   }
   
   handleSubmit = e => {
-    e.preventDefault();
-    const {validateFields, resetFields} = this.props.form;
+          e.preventDefault();
+          const {validateFields, resetFields} = this.props.form;
     
-    //检查当前表单项是否通过校验
-    validateFields(async (error, values) => {
-      console.log(error, values);
-      if (!error) {
-        //校验通过
-        console.log('收集的表单数据：', values);
-        const {username, password} = values;
-        //调用父组件的login方法，由父组件发送请求去登陆
-        this.props.login(username, password);
+          //检查当前表单项是否通过校验
+          validateFields(async (error, values) => {
+            console.log(error, values);
+            if (!error) {
+              //校验通过
+              console.log('收集的表单数据：', values);
+              const {username, password} = values;
+              //调用父组件的login方法，由父组件发送请求去登陆
+              this.props.login(username, password);
         
       } else {
         //校验失败
