@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {
   Form,
   Icon,
@@ -6,12 +7,14 @@ import {
   Button,
   message
 } from 'antd';
-import {reqLogin} from '../../api';
 
 //注意不要放在import上面
 const Item = Form.Item;
 
 class LoginForm extends Component {
+  static propTypes = {
+    login: PropTypes.func.isRequired
+  }
   
   //自定校验规则
   checkPassword = (rule, value, callback) => {
@@ -44,9 +47,8 @@ class LoginForm extends Component {
         //校验通过
         console.log('收集的表单数据：', values);
         const {username, password} = values;
-        //发送ajax请求
-        const result = await reqLogin(username, password);
-        console.log(result);
+        //调用父组件的login方法，由父组件发送请求去登陆
+        this.props.login(username, password);
         
       } else {
         //校验失败
