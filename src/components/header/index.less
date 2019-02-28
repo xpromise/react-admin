@@ -1,4 +1,34 @@
 .header{
-  height: 100px;
-  background-color: deeppink;
+  .header-top{
+    padding: 20px;
+    text-align: right;
+    border-bottom: 1px solid #1DA57A;
+    a{
+      margin-left: 50px;
+    }
+  }
+  .header-bottom{
+    display: flex;
+    align-items: center;
+    .header-bottom-left{
+      font-size: 18px;
+      padding: 5px 0;
+      text-align: center;
+      &::after{
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -15px;
+        transform: translateX(-50%);
+        border-top: 15px solid #fff;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+      }
+    }
+    .header-bottom-right{
+      padding: 5px;
+      text-align: right;
+    }
+  }
+
 }
