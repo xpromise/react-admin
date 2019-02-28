@@ -1,13 +1,53 @@
 import React, {Component} from 'react';
-import {Row, Col, Modal} from 'antd';
+import {Row, Col, Modal, message} from 'antd';
 import {withRouter} from 'react-router-dom';
+import dayjs from 'dayjs';
 
 import MemoryUtils from '../../utils/memoryUtils';
 import {removeItem} from '../../utils/storageUtils';
 import menuList from '../../config/menuConfig';
+import {reqWeather} from '../../api';
 import './index.less';
 
 class Header extends Component {
+  state = {
+    sysTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    dayPictureUrl: 'http://api.map.baidu.com/images/weather/day/qing.png',
+    weather: '晴11'
+  }
+  
+  componentDidMount () {
+    this.updateTime();
+    this.getWeather();
+  }
+  
+  //更新时间
+  updateTime = () => {
+    this.intervalId = setInterval(() => {
+      this.setState({
+        sysTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      })
+    }, 1000)
+  }
+  
+  //获取天气信息
+  getWeather = () => {
+    reqWeather('北京')
+      .then(res => {
+        this.setState({
+          dayPictureUrl: res.dayPictureUrl,
+          weather: res.weather
+        })
+      })
+      .catch(err => {
+        message.error(err);
+      })
+  }
+  
+  componentWillUnmount () {
+    //清除定时器
+    clearInterval(this.intervalId);
+  }
   
   //退出登录方法
   logOut = () => {
@@ -55,9 +95,11 @@ class Header extends Component {
   
   render () {
     //获取当前用户信息
-    const {username} = MemoryUtils.user
+    const {username} = MemoryUtils.user;
     //获取标题
     const title = this.getTitle(menuList);
+    
+    const {sysTime, dayPictureUrl, weather} = this.state;
     
     return (
       <div className='header'>
@@ -67,7 +109,11 @@ class Header extends Component {
         </Row>
         <Row className='header-bottom'>
           <Col span={6} className='header-bottom-left'>{title}</Col>
-          <Col span={18} className='header-bottom-right'>时间 + 天气</Col>
+          <Col span={18} className='header-bottom-right'>
+            <span>{sysTime}</span>
+            <img src={dayPictureUrl} alt="天气"/>
+            <span>{weather}</span>
+          </Col>
         </Row>
       </div>
     )
