@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 
 import LoginForm from '../../components/login-form';
 import {reqLogin} from "../../api";
+import {setItem} from '../../utils/storageUtils';
+import MemoryUtils from '../../utils/memoryUtils';
 
 import logo from '../../assets/images/logo.png';
 import './index.less';
@@ -19,7 +21,9 @@ export default class Login extends Component {
     if (result.status === 0) {
       //用户登陆成功
       //保存用户信息
-      
+      setItem(result.data);
+      //在内存中保存一份
+      MemoryUtils.user = result.data;
       //跳转到admin页面
       this.props.history.replace('/');
     } else {

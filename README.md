@@ -115,4 +115,19 @@
     导航相关数据的配置
     根据导航配置动态渲染导航界面
         Menu/SubMenu/Item/Icon
-        函数递归调用/map()    
+        函数递归调用/map()
+# day03
+## 1. 保存用户信息
+    1. 用户登陆成功时保存用户信息
+    2. 保存在哪？ localStorage sessionStorage 浏览器本地离线存储技术
+      localStorage 持久化存储  --> 静态资源（图片、js、css）
+      sessionStorage 会话存储
+
+## 2. 登陆验证
+    1. 在admin组件中完成登陆验证
+    2. 检查用户是否登陆，检查localStorage是否保存过用户信息
+      登陆过 就能访问
+      没登陆 就跳转到login页面
+    3. 优化： 不每次读取localStorage的值，读取一次之后保存在内存中
+      用户登陆时保证有内存记录
+      用户刷新时保证有内存记录

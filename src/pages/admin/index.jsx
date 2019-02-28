@@ -13,11 +13,21 @@ import Role from '../role';
 import Pie from '../charts/pie';
 import Line from '../charts/line';
 import Bar from '../charts/bar';
+import MemoryUtils from '../../utils/memoryUtils';
 
 import './index.less';
 
 export default class Admin extends Component {
+  
   render () {
+    //登陆验证（保证第一次渲染和重新渲染都要做登陆验证）
+    const user = MemoryUtils.user;
+    if (!user || !user._id) {
+      //说明用户没有登陆过
+      // this.props.history.replace('/login');  //编程式导航，只适用于事件的回调函数中
+      return <Redirect to='/login'/>   //在render方法中返回值需要是一个React组件或者null
+    }
+    
     return (
       <Row className='admin'>
         <Col span={4}>
