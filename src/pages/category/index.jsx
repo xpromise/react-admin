@@ -10,15 +10,16 @@ import {
 
 import MyButton from '../../components/my-button';
 import AddCategoryForm from '../../components/add-category-form';
+import UpdateCategoryNameForm from '../../components/update-category-name-form';
 
-import {reqCategories, reqAddCategory} from '../../api';
-
-
+import {reqCategories, reqAddCategory, reqUpdateCategoryName} from '../../api';
 
 export default class Category extends Component {
   state = {
-    categories: [],
-    isShowAdd: false
+    categories: [],  //保存所有分类数据
+    isShowAdd: false,
+    isShowUpdate: false,
+    category: {}, //保存当前选中单个分类数据
   }
   
   //获取分类列表的方法
@@ -55,6 +56,43 @@ export default class Category extends Component {
         isShowAdd: false
       })
     }
+    //清空用户的输入
+    this.form.resetFields();
+  }
+  
+  //修改分类名称的方法
+  updateCategoryName = async () => {
+    //获取修改后名称
+    const categoryName = this.form.getFieldValue('categoryName');
+    // console.log(categoryName);
+    //获取修改前的名称
+    const {name, _id} = this.state.category;
+    //判断修改前后是否一致，一致就不修改
+    if (categoryName === name) {
+      message.warn('请修改分类名称~');
+    } else {
+      //发送请求
+      const result = await reqUpdateCategoryName(_id, categoryName);
+      if (result.status === 0) {
+        message.success('修改分类名称成功');
+        //关闭对话框, 更新页面显示
+        this.setState({
+          isShowUpdate: false,
+          categories: this.state.categories.map(item => {
+            if (item._id === _id) {
+              item.name = categoryName;
+            }
+            //不管成功和失败都要返回item
+            return item;
+          })
+        })
+      } else {
+        message.error('修改分类名称失败');
+        this.setState({
+          isShowUpdate: false
+        })
+      }
+    }
   }
   
   componentWillMount () {
@@ -66,9 +104,10 @@ export default class Category extends Component {
       }, {
         title: '操作',
         width: 300,
-        render: xxx => {
+        render: category => {
+          
           return <div>
-            <MyButton  name='修改名称' /> &nbsp;&nbsp;&nbsp;
+            <MyButton name='修改名称' onClick={() => this.setState({isShowUpdate: true, category})}/> &nbsp;&nbsp;&nbsp;
             <MyButton name='查看其子品类'/>
           </div>
         }
@@ -81,7 +120,7 @@ export default class Category extends Component {
   
   render () {
   
-    const {categories, isShowAdd} = this.state;
+    const {categories, isShowAdd, isShowUpdate, category} = this.state;
     
     return (
       <Card
@@ -102,6 +141,18 @@ export default class Category extends Component {
           loading={categories.length === 0}
         />
   
+        <Modal
+          title="更新分类"
+          visible={isShowUpdate}
+          okText='确认'
+          cancelText='取消'
+          onOk={this.updateCategoryName}
+          onCancel={() => this.setState({isShowUpdate: false})}
+          width={300}
+        >
+          <UpdateCategoryNameForm categoryName={category.name} setForm={form => this.form = form}/>
+        </Modal>
+      
         <Modal
           title="添加分类"
           visible={isShowAdd}
