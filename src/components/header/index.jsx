@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import MemoryUtils from '../../utils/memoryUtils';
 import {removeItem} from '../../utils/storageUtils';
 import menuList from '../../config/menuConfig';
+import MyButton from '../../components/my-button';
 import {reqWeather} from '../../api';
 import './index.less';
 
@@ -105,7 +106,7 @@ class Header extends Component {
       <div className='header'>
         <Row className='header-top'>
           <span>欢迎, {username}</span>
-          <a href="javascript:void(0);" onClick={this.logOut}>退出</a>
+          <MyButton onClick={this.logOut} name='退出' />
         </Row>
         <Row className='header-bottom'>
           <Col span={6} className='header-bottom-left'>{title}</Col>

@@ -69,9 +69,7 @@ class LoginForm extends Component {
   }
   
   render () {
-    const {getFieldDecorator, getFieldValue} = this.props.form;
-  
-    // console.log(getFieldValue('username'));
+    const {getFieldDecorator} = this.props.form;
   
     return (
       <Form className='login-form-container' onSubmit={this.handleSubmit}>

@@ -8,6 +8,7 @@ import {
   Modal,
 } from 'antd';
 
+import MyButton from '../../components/my-button';
 import AddCategoryForm from '../../components/add-category-form';
 
 import {reqCategories, reqAddCategory} from '../../api';
@@ -67,8 +68,8 @@ export default class Category extends Component {
         width: 300,
         render: xxx => {
           return <div>
-            <a href="javascript:void(0)">修改名称</a> &nbsp;&nbsp;&nbsp;
-            <a href="javascript:void(0)">查看其子品类</a>
+            <MyButton  name='修改名称' /> &nbsp;&nbsp;&nbsp;
+            <MyButton name='查看其子品类'/>
           </div>
         }
       }];
