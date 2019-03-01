@@ -31,3 +31,5 @@ export const reqWeather = city => {
       })
   })
 }
+//请求分类列表的函数
+export const reqCategories = parentId => ajax(prefix + '/manage/category/list', {parentId});

@@ -1,7 +1,31 @@
 import React, {Component} from 'react';
-import { Card, Button, Icon, Table  } from 'antd';
+import { Card, Button, Icon, Table, message  } from 'antd';
+
+import {reqCategories} from '../../api';
 
 export default class Category extends Component {
+  state = {
+    categories: []
+  }
+  
+  //获取分类列表的方法
+  getCategories = async parentId => {
+    //发送请求
+    const result = await reqCategories(parentId);
+    if (result.status === 0) {
+      //获取列表数据成功
+      this.setState({
+        categories: result.data
+      })
+    } else {
+      message.error('获取分类列表数据失败~');
+    }
+  }
+  
+  componentDidMount () {
+    this.getCategories('0');
+  }
+  
   render () {
     const columns = [{
       title: '品类名称',  //表头名称
@@ -18,34 +42,7 @@ export default class Category extends Component {
       }
     }];
   
-    const data = [{
-      key: '1',
-      name: '1111',
-    }, {
-      key: '2',
-      name: '222'
-    }, {
-      key: '3',
-      name: '333'
-    },{
-      key: '4',
-      name: '444',
-    }, {
-      key: '5',
-      name: '555'
-    }, {
-      key: '6',
-      name: '666'
-    },{
-      key: '7',
-      name: '777',
-    }, {
-      key: '8',
-      name: '888'
-    }, {
-      key: '9',
-      name: '999'
-    }];
+    const {categories} = this.state;
     
     return (
       <Card
@@ -54,7 +51,7 @@ export default class Category extends Component {
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={categories}
           bordered
           pagination={{
             pageSize: 3,
@@ -62,6 +59,8 @@ export default class Category extends Component {
             pageSizeOptions: ['3', '6', '9', '12'],
             showQuickJumper: true
           }}
+          rowKey='_id'
+          loading={categories.length === 0}
         />
       </Card>
     )

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Row, Col} from 'antd';
+import {Layout} from 'antd';
 import {Switch, Route, Redirect} from 'react-router-dom';
 
 import LeftNav from '../../components/left-nav';
@@ -15,7 +15,7 @@ import Line from '../charts/line';
 import Bar from '../charts/bar';
 import MemoryUtils from '../../utils/memoryUtils';
 
-import './index.less';
+const {Sider, Content} = Layout;
 
 export default class Admin extends Component {
   
@@ -29,13 +29,13 @@ export default class Admin extends Component {
     }
     
     return (
-      <Row className='admin'>
-        <Col span={4}>
+      <Layout style={{minHeight: '100vh'}}>
+        <Sider>
           <LeftNav />
-        </Col>
-        <Col span={20}>
+        </Sider>
+        <Layout >
           <Header />
-          <div className='admin-main'>
+          <Content style={{margin: 18}}>
             <Switch>
               <Route path='/home' component={Home}/>
               <Route path='/category' component={Category}/>
@@ -47,10 +47,10 @@ export default class Admin extends Component {
               <Route path='/charts/bar' component={Bar}/>
               <Redirect to='/home'/>
             </Switch>
-          </div>
+          </Content>
           <Footer />
-        </Col>
-      </Row>
+        </Layout>
+      </Layout>
     )
   }
 }
