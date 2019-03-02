@@ -16,9 +16,12 @@ import {reqCategories, reqAddCategory, reqUpdateCategoryName} from '../../api';
 
 export default class Category extends Component {
   state = {
-    categories: [],  //保存所有分类数据
+    categories: [],  //保存所有一级分类数据
+    subCategories: [], //保存所有二级分类数据
     isShowAdd: false,
     isShowUpdate: false,
+    parentId: '0',  //保存该显示父分类，如果是0就是一级分类，不是就是二级分类
+    parentName: '',
     category: {}, //保存当前选中单个分类数据
   }
   
@@ -28,9 +31,15 @@ export default class Category extends Component {
     const result = await reqCategories(parentId);
     if (result.status === 0) {
       //获取列表数据成功
-      this.setState({
-        categories: result.data
-      })
+      if (parentId === '0') {
+        this.setState({
+          categories: result.data
+        })
+      } else {
+        this.setState({
+          subCategories: result.data
+        })
+      }
     } else {
       message.error('获取分类列表数据失败~');
     }
@@ -42,22 +51,30 @@ export default class Category extends Component {
     const {parentId, categoryName} = this.form.getFieldsValue();
     //发送请求，后台添加分类
     const result = await reqAddCategory(parentId, categoryName);
+    //初始化更新状态的对象
+    let updateState = {isShowAdd: false};
+    
     if (result.status === 0) {
       message.success('添加分类成功~');
+      const currentId = this.state.parentId;
       //更新数据
-      this.setState({
-        categories: [...this.state.categories, result.data],
-        isShowAdd: false
-      })
+      if (parentId === '0') {
+        updateState.categories = [...this.state.categories, result.data];
+      } else {
+        if (currentId === parentId) {
+          updateState.subCategories = [...this.state.subCategories, result.data];
+        }
+      }
     } else {
       message.error('添加分类失败~');
-      //隐藏对话框
-      this.setState({
-        isShowAdd: false
-      })
     }
+  
     //清空用户的输入
     this.form.resetFields();
+    
+    //统一更新状态
+    this.setState(updateState);
+    
   }
   
   //修改分类名称的方法
@@ -105,11 +122,21 @@ export default class Category extends Component {
         title: '操作',
         width: 300,
         render: category => {
+          const {parentId} = this.state;
           
-          return <div>
-            <MyButton name='修改名称' onClick={() => this.setState({isShowUpdate: true, category})}/> &nbsp;&nbsp;&nbsp;
-            <MyButton name='查看其子品类'/>
-          </div>
+          if (parentId === '0') {
+            return <div>
+              <MyButton name='修改名称' onClick={() => this.setState({isShowUpdate: true, category})}/> &nbsp;&nbsp;&nbsp;
+              <MyButton name='查看其子品类' onClick={() => {
+                //让tabel显示二级分类数据
+                this.setState({parentId: category._id, parentName: category.name})
+                //请求二级分类数据
+                this.getCategories(category._id)
+              }}/>
+            </div>
+          } else {
+            return <MyButton name='修改名称' onClick={() => this.setState({isShowUpdate: true, category})}/>
+          }
         }
       }];
   }
@@ -120,16 +147,26 @@ export default class Category extends Component {
   
   render () {
   
-    const {categories, isShowAdd, isShowUpdate, category} = this.state;
+    const {categories, subCategories, isShowAdd, isShowUpdate, category, parentId, parentName} = this.state;
+    //判断是否显示一级分类
+    const isCategory = parentId === '0';
+    console.log(isCategory);
+    const data = isCategory ? categories : subCategories;
     
     return (
       <Card
-        title="一级分类列表"
+        title={
+          isCategory
+            ? '一级分类列表'
+            : <div><MyButton onClick={() => {
+              this.setState({parentId: '0'})
+            }} name='一级分类'/><Icon type="arrow-right" />&nbsp;&nbsp;{parentName}</div>
+        }
         extra={<Button type='primary' onClick={() => this.setState({isShowAdd: true})}><Icon type="plus" />添加品类</Button>}
       >
         <Table
           columns={this.columns}
-          dataSource={categories}
+          dataSource={data}
           bordered
           pagination={{
             pageSize: 3,
