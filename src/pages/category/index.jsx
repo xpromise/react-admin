@@ -22,6 +22,7 @@ export default class Category extends Component {
     isShowUpdate: false,
     parentId: '0',  //保存该显示父分类，如果是0就是一级分类，不是就是二级分类
     parentName: '',
+    isSubCategoriesLoading: true,
     category: {}, //保存当前选中单个分类数据
   }
   
@@ -36,9 +37,17 @@ export default class Category extends Component {
           categories: result.data
         })
       } else {
-        this.setState({
-          subCategories: result.data
-        })
+        if (result.data.length) {
+          this.setState({
+            subCategories: result.data,
+            isSubCategoriesLoading: true
+          })
+        } else {
+          this.setState({
+            subCategories: result.data,
+            isSubCategoriesLoading: false
+          })
+        }
       }
     } else {
       message.error('获取分类列表数据失败~');
@@ -129,9 +138,9 @@ export default class Category extends Component {
               <MyButton name='修改名称' onClick={() => this.setState({isShowUpdate: true, category})}/> &nbsp;&nbsp;&nbsp;
               <MyButton name='查看其子品类' onClick={() => {
                 //让tabel显示二级分类数据
-                this.setState({parentId: category._id, parentName: category.name})
+                this.setState({parentId: category._id, parentName: category.name});
                 //请求二级分类数据
-                this.getCategories(category._id)
+                this.getCategories(category._id);
               }}/>
             </div>
           } else {
@@ -147,11 +156,12 @@ export default class Category extends Component {
   
   render () {
   
-    const {categories, subCategories, isShowAdd, isShowUpdate, category, parentId, parentName} = this.state;
+    const {categories, subCategories, isShowAdd, isShowUpdate, category, parentId, parentName, isSubCategoriesLoading} = this.state;
     //判断是否显示一级分类
     const isCategory = parentId === '0';
-    console.log(isCategory);
+    
     const data = isCategory ? categories : subCategories;
+    const isLoading = isCategory ? categories.length === 0 : isSubCategoriesLoading && subCategories.length === 0;
     
     return (
       <Card
@@ -175,7 +185,7 @@ export default class Category extends Component {
             showQuickJumper: true
           }}
           rowKey='_id'
-          loading={categories.length === 0}
+          loading={isLoading}
         />
   
         <Modal

@@ -7,7 +7,7 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import Home from '../home';
 import Category from '../category';
-import Product from '../product';
+import Product from '../product/product';
 import User from '../user';
 import Role from '../role';
 import Pie from '../charts/pie';

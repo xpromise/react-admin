@@ -24,7 +24,7 @@ class LeftNav extends Component {
         //得到当前路径
         const {pathname} = this.props.location;
         //找是否有与children中匹配的pathname
-        const result = item.children.find(item => item.key === pathname);
+        const result = item.children.find(item => pathname.indexOf(item.key) === 0);
         if (result) {
           //children中有与pathname匹配路径，记录item.key
           this.openKey = item.key;
@@ -60,7 +60,11 @@ class LeftNav extends Component {
   
   render () {
     //获取当前路由路径
-    const {pathname} = this.props.location;
+    let {pathname} = this.props.location;
+    
+    if (/^\/product/.test(pathname)) {
+      pathname = '/product';
+    }
     
     return (
       <div className='left-nav'>
