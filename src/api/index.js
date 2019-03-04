@@ -43,3 +43,5 @@ export const reqProductsList = (pageNum, pageSize) => ajax(prefix + '/manage/pro
 export const reqSearchProductsList = ({pageNum, pageSize, searchType, searchName}) => ajax(prefix + '/manage/product/search', {pageNum, pageSize, [searchType]: searchName})
 //请求删除图片的函数
 export const reqDelImage = (name, id) => ajax(prefix + '/manage/img/delete', {name, id}, 'POST');
+//请求更新商品状态的函数
+export const reqUpdateStatus = (productId, status) => ajax(prefix + '/manage/product/updateStatus', {productId, status}, 'POST');

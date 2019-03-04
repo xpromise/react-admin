@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card, Button, Icon, Table, Select, Input, message} from 'antd';
 
 import MyButton from '../../components/my-button';
-import {reqProductsList, reqSearchProductsList, reqCategories} from '../../api';
+import {reqProductsList, reqSearchProductsList, reqCategories, reqUpdateStatus} from '../../api';
 
 const Option = Select.Option;
 
@@ -33,11 +33,22 @@ export default class Index extends Component {
       {
         title: '状态',
         width: 200,
-        render: category => {
-          return <div>
-            <Button type='primary'>上架</Button>&nbsp;&nbsp;
-            已下架
-          </div>
+        render: product => {
+          //商品状态: 1:在售, 2: 下架了
+          const {_id, status} = product;
+          console.log(_id, status);
+          
+          if (status === 1) {
+            return <div>
+              <Button type='primary' onClick={() => this.updateStatus(_id, status)}>上架</Button>&nbsp;&nbsp;
+              已下架
+            </div>
+          } else {
+            return <div>
+              <Button type='primary' onClick={() => this.updateStatus(_id, status)}>下架</Button>&nbsp;&nbsp;
+              在售
+            </div>
+          }
         }
       },
       {
@@ -61,6 +72,25 @@ export default class Index extends Component {
         }
       }
       ];
+  }
+  
+  updateStatus = async (productId, status) => {
+    //改变状态值~
+    status = status === 1 ? 2 : 1;
+    const result = await reqUpdateStatus(productId, status);
+    if (result.status === 0) {
+      message.success('更新状态成功~');
+      this.setState({
+        products: this.state.products.map(item => {
+          if (item._id === productId) {
+            item.status = status;
+          }
+          return item;
+        })
+      })
+    } else {
+      message.error('更新状态失败~');
+    }
   }
   
   //获取商品列表的方法
