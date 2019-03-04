@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Card, Input, Icon, Form, Cascader, InputNumber, Button } from 'antd';
 
+import PicturesWall from './pictures-wall';
 import {reqCategories} from '../../api';
 
 const Item = Form.Item;
@@ -172,7 +173,7 @@ class SaveUpdate extends Component {
             
           </Item>
           <Item label='商品图片' {...formItemLayout}>
-            xxx
+            <PicturesWall productId={product._id} imgs={product.imgs}/>
           </Item>
           <Item label='商品详情' labelCol={{span: 2}} wrapperCol={{span: 15}}>
             xxx
