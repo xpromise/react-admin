@@ -22,6 +22,7 @@ class SaveUpdate extends Component {
       if (parentId === '0') {
         //说明一级分类  - 不想重新渲染页面
         this.categories = result.data;
+        
         this.initOptions();
       } else {
         this.subCategories = result.data;
@@ -32,7 +33,7 @@ class SaveUpdate extends Component {
   initOptions = async () => {
     const {state} = this.props.location;
     //初始化一级分类的options
-    let options = this.categories.map(item => ({value: item._id, label: item.name}));
+    let options = this.categories.map(item => ({value: item._id, label: item.name, isLeaf: false}));
   
     //判断是否有二级分类数据，如果有，接着去请求 （保证一级分类数据OK，只更新一次状态）
     if (state && state.product.pCategoryId !== '0') {
@@ -48,6 +49,26 @@ class SaveUpdate extends Component {
     //统一更新状态
     this.setState({
       options
+    })
+  }
+  //用来加载二级分类数据的函数
+  loadData = async (selectedOptions) => {
+    // console.log(selectedOptions);
+    //获取当前分类最后一项值
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    targetOption.loading = true;
+    //发送请求，请求二级分类数据
+    await this.getCategories(targetOption.value);
+    //没有loading图
+    targetOption.loading = false;
+    if (this.subCategories.length) {
+      targetOption.children = this.subCategories.map(item => ({value: item._id, label: item.name}));
+    } else {
+      targetOption.isLeaf = true;
+    }
+    //更新状态：重新渲染页面
+    this.setState({
+      options: [...this.state.options]
     })
   }
   
@@ -125,7 +146,11 @@ class SaveUpdate extends Component {
                   initialValue: category
                 }
               )(
-                <Cascader placeholder='请选择分类' options={options}/>
+                <Cascader
+                  placeholder='请选择分类'
+                  options={options}
+                  loadData={this.loadData}
+                />
               )
             }
           </Item>
