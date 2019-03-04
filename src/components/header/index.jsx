@@ -70,6 +70,9 @@ class Header extends Component {
   //获取标题方法
   getTitle = menu => {
     const {pathname} = this.props.location;
+    if (pathname.indexOf('/product') === 0) {
+      return '商品管理';
+    }
     
     for (let i = 0; i < menu.length; i++) {
       let item = menu[i];

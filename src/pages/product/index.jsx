@@ -43,11 +43,11 @@ export default class Index extends Component {
       {
         title: '操作',
         width: 200,
-        render: category => {
+        render: product => {
       
           return <div>
             <MyButton name='详情' onClick={() => {}}/> &nbsp;&nbsp;
-            <MyButton name='修改' onClick={() => {}}/>
+            <MyButton name='修改' onClick={() => this.props.history.push('/product/saveupdate', {product})}/>
           </div>
         }
       }

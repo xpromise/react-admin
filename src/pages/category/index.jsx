@@ -57,6 +57,7 @@ export default class Category extends Component {
   //添加分类的函数
   addCategory = async () => {
     //获取当前填写表单数据
+    //parentId 是当前填写表单的id （可能是0（说明添加的是一级分类） 可能是其他值（说明添加的是二级分类））
     const {parentId, categoryName} = this.form.getFieldsValue();
     //发送请求，后台添加分类
     const result = await reqAddCategory(parentId, categoryName);
@@ -65,11 +66,15 @@ export default class Category extends Component {
     
     if (result.status === 0) {
       message.success('添加分类成功~');
+      //currentId是当前二级分类的parentId（也就代表一级分类）
       const currentId = this.state.parentId;
       //更新数据
+      //如果是0添加的是1级分类，不用考虑
       if (parentId === '0') {
         updateState.categories = [...this.state.categories, result.data];
       } else {
+        //如果不是，就是添加二级分类，此时还要判断我当前显示的二级分类是否与添加的一致
+        //如果一致就更新二级分类，如果不一致，就不用更新，因为下次我会重新请求，得到更新后的数据
         if (currentId === parentId) {
           updateState.subCategories = [...this.state.subCategories, result.data];
         }
