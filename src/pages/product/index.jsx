@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card, Button, Icon, Table, Select, Input, message} from 'antd';
 
 import MyButton from '../../components/my-button';
-import {reqProductsList, reqSearchProductsList} from '../../api';
+import {reqProductsList, reqSearchProductsList, reqCategories} from '../../api';
 
 const Option = Select.Option;
 
@@ -47,7 +47,15 @@ export default class Index extends Component {
           //得到整个数据，就不能传入dataIndex
           // console.log(product);
           return <div>
-            <MyButton name='详情' onClick={() => {}}/> &nbsp;&nbsp;
+            <MyButton name='详情' onClick={async () => {
+              let state = {product};
+              if (product.pCategoryId !== '0') {
+                const {data} = await reqCategories('0');
+                const {name} = data.find(item => item._id === product.pCategoryId);
+                state.pName = name;
+              }
+              this.props.history.push('/product/detail', state);
+            }}/> &nbsp;&nbsp;
             <MyButton name='修改' onClick={() => this.props.history.push('/product/saveupdate', {product})}/>
           </div>
         }

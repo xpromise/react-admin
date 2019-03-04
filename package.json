@@ -6,6 +6,8 @@
     "antd": "^3.13.6",
     "axios": "^0.18.0",
     "dayjs": "^1.8.8",
+    "draft-js": "^0.10.5",
+    "html-to-draftjs": "^1.4.0",
     "jsonp": "^0.2.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
