@@ -5,34 +5,27 @@ const Item = List.Item;
 
 export default class Detail extends Component {
   
-  renderItem = item => {
-    if (typeof item === 'object') {
-      if (!item.hasOwnProperty('length')) {
-        const {pCategoryId, pName, name} = item;
-        if (pCategoryId === '0') {
-          return <Item>商品分类: {name}</Item>;
-        } else {
-          return <Item>商品分类: {pName}<Icon type='arrow-right'/>{name}</Item>;
-        }
-      } else {
+  renderItem = (item, index) => {
+    switch (index) {
+      case 4:
         return <Item>商品图片: {item.map((item, index) => <img key={index} src={'http://localhost:5000/upload/' + item} alt={item}/>)}</Item>;
-      }
-    } else {
-      if (item.indexOf('商品') === -1) {
-        return <Item>商品详情: <div dangerouslySetInnerHTML={{__html: item}}></div></Item>
-      }
-      return <Item>{item}</Item>;
+      case 5:
+        return <Item>商品详情: <div dangerouslySetInnerHTML={{__html: item}} /></Item>
+      default:
+        return <Item>{item}</Item>;
     }
   }
   
   render () {
     const {name, desc, price, pCategoryId, imgs, detail} = this.props.location.state.product;
     
-    const category = {
-      pCategoryId,
-      pName: this.props.location.state.pName,
-      name
-    };
+    let category;
+    const {pName} = this.props.location.state;
+    if (pCategoryId === '0') {
+      category = <span>商品分类: {name}</span>;
+    } else {
+      category = <span>商品分类: {pName}<Icon type='arrow-right'/>{name}</span>;
+    }
     
     const data = [
       '商品名称: ' + name,
@@ -42,7 +35,6 @@ export default class Detail extends Component {
       imgs,
       detail
     ];
-    
     
     return (
       <Card
