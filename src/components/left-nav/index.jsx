@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import {Menu, Icon} from 'antd';
 import {NavLink, withRouter} from 'react-router-dom';
 
+import {reqRoleList} from '../../api';
 import menuList from '../../config/menuConfig';
+import MemoryUtils from '../../utils/memoryUtils';
+
 import './index.less';
 import logo from '../../assets/images/logo.png';
 
@@ -10,10 +13,57 @@ const SubMenu = Menu.SubMenu;
 const Item = Menu.Item;
 
 class LeftNav extends Component {
+  state = {
+    menu: [],
+    openKeys: []
+  }
   
-  //需要在渲染之前得到要菜单项
+ /* //需要在渲染之前得到要菜单项
   componentWillMount () {
     this.menu = this.createMenu(menuList);
+  }*/
+  
+  componentDidMount () {
+    this.getRoleList();
+  }
+  
+  getRoleList = async () => {
+    const result = await reqRoleList();
+    if (result.status === 0) {
+      const {role_id, username} = MemoryUtils.user;
+      let newMenu = menuList;
+      
+      if (username !== 'admin') {
+        const {menus} = result.data.find(item => item._id === role_id);
+        //对原菜单数据进行过滤
+        newMenu = this.filterMenu(menuList, menus);
+      }
+      
+      this.setState({
+        menu: this.createMenu(newMenu)
+      });
+    }
+  }
+  
+  filterMenu = (menuList, menus) => {
+    let newMenu = [];
+    for (var i = 0; i < menuList.length; i++) {
+      const item = menuList[i];
+      //判断一级菜单
+      const result = menus.find(menu => item.key === menu);
+      //result有值，说明当前遍历的item在menus里面
+      if (result) {
+        if (item.children) {
+          //说明有二级菜单
+          item.children = this.filterMenu(item.children, menus);
+          newMenu.push(item);
+        } else {
+          //说明没有
+          newMenu.push(item);
+        }
+      }
+    }
+    return newMenu;
   }
   
   createMenu = (menu) => {
@@ -27,7 +77,9 @@ class LeftNav extends Component {
         const result = item.children.find(item => pathname.indexOf(item.key) === 0);
         if (result) {
           //children中有与pathname匹配路径，记录item.key
-          this.openKey = item.key;
+          this.setState({
+            openKeys: [item.key]
+          })
         }
         
         return <SubMenu key={item.key} title={<span><Icon type={item.icon} />{item.title}</span>}>
@@ -58,6 +110,13 @@ class LeftNav extends Component {
     })
   }
   
+  handleOpenChange = (openKeys) => {
+    console.log(openKeys);
+    this.setState({
+      openKeys
+    })
+  }
+  
   render () {
     //获取当前路由路径
     let {pathname} = this.props.location;
@@ -78,10 +137,11 @@ class LeftNav extends Component {
           mode="inline"
           theme="dark"
           selectedKeys={[pathname]}
-          defaultOpenKeys={[this.openKey]}
+          openKeys={this.state.openKeys}
+          onOpenChange={this.handleOpenChange}
         >
           {
-            this.menu
+            this.state.menu
           }
         </Menu>
       </div>

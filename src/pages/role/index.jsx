@@ -125,7 +125,6 @@ export default class Role extends Component {
   render () {
     const {roles, role, value, isDisabled, isShowAddRoleModal, isShowUpdateRoleModal} = this.state;
     
-    
     return (
       <Card
         title={

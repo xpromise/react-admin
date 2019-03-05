@@ -12,7 +12,7 @@ class SaveUpdate extends Component {
     options: []
   }
   
-  componentWillMount () {
+  componentDidMount () {
     //默认请求一级分类数据
     this.getCategories('0');
   }
@@ -153,6 +153,7 @@ class SaveUpdate extends Component {
               getFieldDecorator(
                 'name',
                 {
+                  rules: [{required: true, min: 10}],
                   initialValue: product ? product.name : ''
                 }
               )(
