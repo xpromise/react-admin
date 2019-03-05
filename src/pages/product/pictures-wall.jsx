@@ -6,7 +6,7 @@ import {reqDelImage} from '../../api';
 
 export default class PicturesWall extends Component {
   static propTypes = {
-    productId: PropTypes.string.isRequired,
+    productId: PropTypes.string,
     imgs: PropTypes.array,
   }
   
@@ -25,14 +25,17 @@ export default class PicturesWall extends Component {
       url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     }
      */
-    const fileList = this.props.imgs.map((item, index) => {
-      return {
-        uid: -index,
-        name: item,
-        status: 'done', // done 加载完成的图片  loading 正在加载  error 加载失败  "removed" 删除图片
-        url: 'http://localhost:5000/upload/' + item
-      }
-    })
+    const fileList = this.props.imgs
+      ? this.props.imgs.map((item, index) => {
+        return {
+          uid: -index,
+          name: item,
+          status: 'done', // done 加载完成的图片  loading 正在加载  error 加载失败  "removed" 删除图片
+          url: 'http://localhost:5000/upload/' + item
+        }
+      })
+      : [];
+    
     this.setState({fileList})
   }
   

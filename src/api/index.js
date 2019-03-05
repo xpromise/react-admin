@@ -47,3 +47,9 @@ export const reqDelImage = (name, id) => ajax(prefix + '/manage/img/delete', {na
 export const reqUpdateStatus = (productId, status) => ajax(prefix + '/manage/product/updateStatus', {productId, status}, 'POST');
 //请求更新商品的函数
 export const reqUpdateProduct = product => ajax(prefix + '/manage/product/update', product, 'POST');
+//请求角色列表的函数
+export const reqRoleList = () => ajax(prefix + '/manage/role/list');
+//请求创建角色的函数
+export const reqAddRole = (name) => ajax(prefix + '/manage/role/add', {name}, 'POST');
+//请求更新角色的函数
+export const reqUpdateRole = (role) => ajax(prefix + '/manage/role/update', {role}, 'POST');
