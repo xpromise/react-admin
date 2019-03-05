@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Card, Input, Icon, Form, Cascader, InputNumber, Button } from 'antd';
+import {Card, Input, Icon, Form, Cascader, InputNumber, Button, message } from 'antd';
 
 import PicturesWall from './pictures-wall';
-import {reqCategories} from '../../api';
+import RichTextEditor from './rich-text-editor';
+import {reqCategories, reqUpdateProduct} from '../../api';
 
 const Item = Form.Item;
 
@@ -73,6 +74,38 @@ class SaveUpdate extends Component {
     })
   }
   
+  handleSubmit = async e => {
+    e.preventDefault();
+    //收集表单数据
+    const {name, desc, price, category} = this.props.form.getFieldsValue();
+    //调用子组件的方法
+    // ref 获取input原生标签得到就是 原生DOM对象  获取组件 得到就是组件的实例对象
+    const detail = this.editor.getContent();
+    /*
+      category  ['categoryId']   ['pCategoryId', 'categoryId']
+     */
+    //返回给后台更新的产品数据
+    const product = {
+      _id: this.props.location.state.product._id,
+      name,
+      desc,
+      price,
+      detail,
+      categoryId: category.length === 1 ? category[0] : category[1],
+      pCategoryId: category.length === 1 ? '0' : category[0]
+    }
+    console.log(product);
+    //
+    const result = await reqUpdateProduct(product);
+    if (result.status === 0) {
+      message.success('更新产品成功');
+    } else {
+      message.error('更新产品失败');
+    }
+    
+    this.props.history.goBack();
+  }
+  
   render () {
     const formItemLayout = {
       labelCol: {
@@ -114,7 +147,7 @@ class SaveUpdate extends Component {
           </div>
         }
       >
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <Item label='商品名称' {...formItemLayout}>
             {
               getFieldDecorator(
@@ -170,13 +203,12 @@ class SaveUpdate extends Component {
                 />
               )
             }
-            
           </Item>
           <Item label='商品图片' {...formItemLayout}>
             <PicturesWall productId={product._id} imgs={product.imgs}/>
           </Item>
-          <Item label='商品详情' labelCol={{span: 2}} wrapperCol={{span: 15}}>
-            xxx
+          <Item label='商品详情' labelCol={{span: 2}} wrapperCol={{span: 20}}>
+            <RichTextEditor detail={product ? product.detail : ''} ref={editor => this.editor = editor}/>
           </Item>
           <Item>
             <Button type='primary' style={{marginLeft: 20}} htmlType='submit'>提交</Button>
