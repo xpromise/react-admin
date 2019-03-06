@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Layout} from 'antd';
 import {Switch, Route, Redirect} from 'react-router-dom';
-
-import LeftNav from '../../components/left-nav';
-import Header from '../../components/header';
+//改为容器组件
+import LeftNav from '../../containers/left-nav';
+import Header from '../../containers/header';
 import Footer from '../../components/footer';
 import Home from '../home';
 import Category from '../category';

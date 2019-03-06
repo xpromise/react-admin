@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Row, Col, Modal, message} from 'antd';
 import {withRouter} from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -11,6 +12,10 @@ import {reqWeather} from '../../api';
 import './index.less';
 
 class Header extends Component {
+  static propTypes = {
+    menuTitle: PropTypes.string.isRequired
+  }
+  
   state = {
     sysTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     dayPictureUrl: 'http://api.map.baidu.com/images/weather/day/qing.png',
@@ -101,7 +106,7 @@ class Header extends Component {
     //获取当前用户信息
     const {username} = MemoryUtils.user;
     //获取标题
-    const title = this.getTitle(menuList);
+    // const title = this.getTitle(menuList);
     
     const {sysTime, dayPictureUrl, weather} = this.state;
     
@@ -112,7 +117,7 @@ class Header extends Component {
           <MyButton onClick={this.logOut} name='退出' />
         </Row>
         <Row className='header-bottom'>
-          <Col span={6} className='header-bottom-left'>{title}</Col>
+          <Col span={6} className='header-bottom-left'>{this.props.menuTitle}</Col>
           <Col span={18} className='header-bottom-right'>
             <span>{sysTime}</span>
             <img src={dayPictureUrl} alt="天气"/>

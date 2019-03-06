@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Menu, Icon} from 'antd';
 import {NavLink, withRouter} from 'react-router-dom';
 
@@ -13,6 +14,10 @@ const SubMenu = Menu.SubMenu;
 const Item = Menu.Item;
 
 class LeftNav extends Component {
+  static propType = {
+    setMenuTitle: PropTypes.func.isRequired
+  }
+  
   state = {
     menu: [],
     openKeys: []
@@ -76,6 +81,7 @@ class LeftNav extends Component {
         //找是否有与children中匹配的pathname
         const result = item.children.find(item => pathname.indexOf(item.key) === 0);
         if (result) {
+          this.props.setMenuTitle(result.title);
           //children中有与pathname匹配路径，记录item.key
           this.setState({
             openKeys: [item.key]
@@ -111,10 +117,42 @@ class LeftNav extends Component {
   }
   
   handleOpenChange = (openKeys) => {
-    console.log(openKeys);
+    // console.log(openKeys);
     this.setState({
       openKeys
     })
+  }
+  
+  onSelect = ({key}) => {
+    let title;
+  
+    if (key.indexOf('/product') === 0) {
+      title = '商品管理';
+    } else {
+      for (let i = 0; i < menuList.length; i++) {
+        let item = menuList[i];
+        if (item.children) {
+          for (let j = 0; j < item.children.length; j++) {
+            let cItem = item.children[j];
+            if (cItem.key === key) {
+              title = cItem.title;
+            }
+          }
+          //递归去找是否有匹配的title，如果有才返回
+          /*const title = this.getTitle(item.children);
+          if (title) {
+            return title;
+          }*/
+        } else {
+          if (item.key === key) {
+            title = item.title;
+          }
+        }
+      }
+    }
+    
+    //处理title数据
+    this.props.setMenuTitle(title);
   }
   
   render () {
@@ -139,6 +177,7 @@ class LeftNav extends Component {
           selectedKeys={[pathname]}
           openKeys={this.state.openKeys}
           onOpenChange={this.handleOpenChange}
+          onSelect={this.onSelect}
         >
           {
             this.state.menu
@@ -150,4 +189,4 @@ class LeftNav extends Component {
 }
 
 //withRouter: 是一个高阶组件， 作用：将普通组件变成路由组件(普通组件就多了三个属性)
-export default withRouter(LeftNav);
+export default LeftNav;

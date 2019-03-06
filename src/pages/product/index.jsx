@@ -36,7 +36,6 @@ export default class Index extends Component {
         render: product => {
           //商品状态: 1:在售, 2: 下架了
           const {_id, status} = product;
-          console.log(_id, status);
           
           if (status === 1) {
             return <div>

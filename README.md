@@ -151,5 +151,39 @@
     4. 修改品类名称
     5. 查看其子品类 
 
+## redux使用步骤
+1. 下载redux react-redux redux-thunk redux-devtools-extension
+2. 定义4个redux的文件
+  * store  
+    * 管理redux状态数据的
+    * 流程：
+      * 初始化： reducer中读取状态数据
+      * 更新： dispatch触发的
+    * 方法：
+      * getState 获取状态
+      * dispatch 更新状态
+      * subscribe 监听状态变化
+    * 创建方法： createStore(reducers, composeWithDevTools(applyMiddleware(thunk)))
+  * actions
+    * 用来创建action对象的工厂函数
+    * {type: xxx, data: xxx}
+    * 分类：
+      * 同步action  返回值是action对象 
+      * 异步action  返回值是一个函数，需要请求再更新状态时，使用异步action
+  * reducers
+    * 根据preState和action生成newState
+    * function (preState = 0, action) {switch (action.type) {case xxx: return xxx; default: return preState}}
+  * action-types
+    * 定义action的type的常量，提供给actions和reducers使用
+3. 容器组件
+  * 如果UI组件需要redux的内容，就要将其包装一个容器组件，由容器组件负责通过props方式传递给UI组件
+  * export default connect(state => {number: state.number}, {action creators})(UI组件)
+4. UI组件
+  * 使用容器组件传递的属性
+  * 将使用UI组件改为容器组件
+5. 入口文件 index.js
+  * <Provider store={store}><App /></Provider>  
+
+
     
     
